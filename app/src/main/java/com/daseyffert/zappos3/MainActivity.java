@@ -2,6 +2,8 @@ package com.daseyffert.zappos3;
 
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -25,6 +28,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +41,7 @@ public class MainActivity extends Activity {
     TextView searchItem;
     RequestQueue requestQueue;
     TextView test;
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +51,6 @@ public class MainActivity extends Activity {
         //initialize searchItem TextView in mainActivity along with method to search upon pressing enter
         searchItem = (TextView) findViewById(R.id.activity_main_search_item);
         searchItem.setOnEditorActionListener(enterListener);
-
 
         test = (TextView) findViewById(R.id.activity_main_test_text_view);
         searchButton= (Button) findViewById(R.id.activity_main_search_button);
@@ -87,12 +93,14 @@ public class MainActivity extends Activity {
                                         productInfo.price = result.getString("price");
                                         productInfo.productRating = result.getString("productRating");
                                         productInfo.asin = result.getString("asin");
+                                        productInfo.imageURL = result.getString("imageUrl");
+
 
 
                                         resultList.add(productInfo);
 
 
-                                        test.append(productInfo.brandName + "|" + productInfo.productName + "|" + productInfo.originalPrice + "|" + productInfo.price + "|" + productInfo.productRating + "|" + productInfo.asin + "\n");
+                                        test.append(productInfo.brandName + "|" + productInfo.productName + "|" + productInfo.originalPrice + "|" + productInfo.price + "|" + productInfo.productRating + "|" + productInfo.asin + "|" + productInfo.imageURL +"\n");
                                     }
                                     llm.setOrientation(LinearLayoutManager.VERTICAL);
                                     recVList.setLayoutManager(llm);
@@ -133,6 +141,24 @@ public class MainActivity extends Activity {
 
     }
 
+
+    public Bitmap getBitmapFromURL(String src){
+        try{
+
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 
 
     private List<ProductInfo> createList(int size) {

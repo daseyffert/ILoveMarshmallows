@@ -1,16 +1,32 @@
 package com.daseyffert.zappos3;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
 
     private List<ProductInfo> productList;
+    private ImageLoader imageLoader;
 
     public ContactAdapter(List<ProductInfo> contactList) {
         this.productList = contactList;
@@ -23,14 +39,23 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     }
 
     @Override
-    public void onBindViewHolder(ContactViewHolder contactViewHolder, int i) {
+    public void onBindViewHolder(final ContactViewHolder contactViewHolder, int i) {
         ProductInfo pi = productList.get(i);
         contactViewHolder.brandName.setText(pi.brandName);
         contactViewHolder.productName.setText(pi.productName);
-        contactViewHolder.originalPrice.setText(pi.originalPrice);
-        contactViewHolder.price.setText(pi.price);
-        contactViewHolder.productRating.setText(pi.productRating);
+        if(pi.originalPrice == "null")
+            contactViewHolder.originalPrice.setText("Original Price: not Available");
+        else
+            contactViewHolder.originalPrice.setText("Original Price: " + pi.originalPrice);
+
+        contactViewHolder.price.setText("Our Price: " + pi.price);
+        contactViewHolder.productRating.setText(pi.productRating + "/5.0");
+
+        //contactViewHolder.productRating.setText(pi.productRating + "/5.0");
         contactViewHolder.asin.setText(pi.asin);
+
+        Picasso.with(contactViewHolder.imageUrl.getContext()).load(pi.imageURL).into(contactViewHolder.imageUrl);
+        //      contactViewHolder.imageUrl.setImageBitmap(pi.bitmap);
         // example   contactViewHolder.vTitle.setText(ci.name + " " + ci.surname);
     }
 
@@ -51,6 +76,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         protected TextView price;
         protected TextView productRating;
         protected TextView asin;
+        protected ImageView imageUrl;
 
         public ContactViewHolder(View v) {
             super(v);
@@ -60,6 +86,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             price = (TextView) v.findViewById(R.id.card_layout_price);
             productRating = (TextView) v.findViewById(R.id.card_layout_product_rating);
             asin = (TextView) v.findViewById(R.id.card_layout_asin);
+            imageUrl = (ImageView) v.findViewById(R.id.card_layout_image);
         }
     }
+
+
+
 }

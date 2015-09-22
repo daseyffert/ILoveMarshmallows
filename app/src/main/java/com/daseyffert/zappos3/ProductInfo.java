@@ -1,18 +1,28 @@
 package com.daseyffert.zappos3;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import org.w3c.dom.Node;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Created by Daniel on 9/19/2015.
  */
 
 public class ProductInfo {
+
     protected String brandName;
     protected String productName;
     protected String originalPrice;
     protected String price;
     protected String productRating;
     protected String asin;
+    protected String imageURL;
+    protected Bitmap bitmap = getBitmapFromURL(imageURL) ;
 
 
 
@@ -22,6 +32,34 @@ public class ProductInfo {
     protected static final String PRICE_PREFIX = "Price: ";
     protected static final String RATING_PREFIX = "Rating: ";
     protected static final String ASIN_PREFIX = "Asin: ";
+
+
+
+    public Bitmap getBitmapFromURL(String src){
+        try{
+
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
     public String getAsin() {
         return asin;
