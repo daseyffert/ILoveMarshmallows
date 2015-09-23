@@ -2,6 +2,7 @@ package com.daseyffert.zappos3;
 
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -107,6 +108,16 @@ public class MainActivity extends Activity {
 
                                     ContactAdapter adapter = new ContactAdapter(resultList);
                                     recVList.setAdapter(adapter);
+//
+//                                    ContactAdapter.ContactViewHolder.test.setOnClickListener(new View.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(View v) {
+//                                            Intent intent = new Intent(v.getContext(), DetailsActivity.class);
+//                                            startActivity(intent);
+//                                        }
+//                                    });
+//
+
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -190,4 +201,5 @@ public class MainActivity extends Activity {
             return true;
         }
     };
+
 }
