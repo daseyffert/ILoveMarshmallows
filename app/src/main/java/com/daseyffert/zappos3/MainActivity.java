@@ -42,7 +42,6 @@ public class MainActivity extends Activity {
     TextView searchItem;
     RequestQueue requestQueue;
     TextView test;
-    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +52,7 @@ public class MainActivity extends Activity {
         searchItem = (TextView) findViewById(R.id.activity_main_search_item);
         searchItem.setOnEditorActionListener(enterListener);
 
-        test = (TextView) findViewById(R.id.activity_main_test_text_view);
+        //test = (TextView) findViewById(R.id.activity_main_test_text_view);
         searchButton= (Button) findViewById(R.id.activity_main_search_button);
         requestQueue = Volley.newRequestQueue(this);
 
@@ -66,12 +65,11 @@ public class MainActivity extends Activity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                //get text from search textView and add it to end of url
                 Editable itemSearched = (Editable) searchItem.getText();
                 String url = "https://zappos.amazon.com/mobileapi/v1/search?term=" + itemSearched;
 
-                //llm.setOrientation(LinearLayoutManager.VERTICAL);
-               // recVList.setLayoutManager(llm);
-
+                //Json request to get objects from array
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
 
                         new Response.Listener<JSONObject>() {
@@ -82,11 +80,10 @@ public class MainActivity extends Activity {
                                 try {
                                     JSONArray jsonArray = response.getJSONArray("results");
 
+                                    //got through each object and assaing the value of the object to data model then add that model to the list
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject result = jsonArray.getJSONObject(i);
-                                        //resultList = new ArrayList<ProductInfo>();
                                         ProductInfo productInfo = new ProductInfo();
-
 
                                         productInfo.brandName = result.getString("brandName");
                                         productInfo.productName = result.getString("productName");
@@ -96,38 +93,20 @@ public class MainActivity extends Activity {
                                         productInfo.asin = result.getString("asin");
                                         productInfo.imageURL = result.getString("imageUrl");
 
-
-
                                         resultList.add(productInfo);
 
 
-                                        test.append(productInfo.brandName + "|" + productInfo.productName + "|" + productInfo.originalPrice + "|" + productInfo.price + "|" + productInfo.productRating + "|" + productInfo.asin + "|" + productInfo.imageURL +"\n");
                                     }
+                                    //create linearlayout managers for recycler views
                                     llm.setOrientation(LinearLayoutManager.VERTICAL);
                                     recVList.setLayoutManager(llm);
-
+                                    //send the result list to the adapters so they can make the recycler view layouts
                                     ContactAdapter adapter = new ContactAdapter(resultList);
                                     recVList.setAdapter(adapter);
-//
-//                                    ContactAdapter.ContactViewHolder.test.setOnClickListener(new View.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(View v) {
-//                                            Intent intent = new Intent(v.getContext(), DetailsActivity.class);
-//                                            startActivity(intent);
-//                                        }
-//                                    });
-//
-
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                //llm.setOrientation(LinearLayoutManager.VERTICAL);
-                                //recVList.setLayoutManager(llm);
-
-                               // ContactAdapter adapter = new ContactAdapter(resultList);
-                                //recVList.setAdapter(adapter);
-
                             }
                         },
                         new Response.ErrorListener() {
@@ -137,60 +116,11 @@ public class MainActivity extends Activity {
                             }
                         }
                 );
-
                 requestQueue.add(jsonObjectRequest);
-                //*************************************************************************************************************
-//                llm.setOrientation(LinearLayoutManager.VERTICAL);
-//                recVList.setLayoutManager(llm);
-//
-//
-//
-//                ContactAdapter adapter = new ContactAdapter(createList(30));
-               // recVList.setAdapter(adapter);
             }
         });
 
     }
-
-
-    public Bitmap getBitmapFromURL(String src){
-        try{
-
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-
-        }catch(Exception e){
-            e.printStackTrace();
-            return null;
-        }
-
-    }
-
-
-    private List<ProductInfo> createList(int size) {
-
-        List<ProductInfo> result = new ArrayList<ProductInfo>();
-        for (int i=1; i <= size; i++) {
-            ProductInfo productInfo = new ProductInfo();
-            productInfo.brandName = ProductInfo.BRAND_PREFIX + i;
-            productInfo.productName = ProductInfo.PRODUCT_PREFIX + i;
-            productInfo.originalPrice = ProductInfo.OPRICE_PREFIX + i;
-            productInfo.price = ProductInfo.PRICE_PREFIX + i;
-            productInfo.productRating = ProductInfo.RATING_PREFIX + i;
-            productInfo.asin = ProductInfo.ASIN_PREFIX + i;
-
-            result.add(productInfo);
-
-        }
-
-        return result;
-    }
-
 
 //PURPOSE: execute searchButton by pressing enter in editText View
     private TextView.OnEditorActionListener enterListener = new TextView.OnEditorActionListener(){

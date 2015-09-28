@@ -30,8 +30,8 @@ import java.util.List;
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder>{
 
     private List<ProductInfo> productList;
-    private ImageLoader imageLoader;
 
+    //copy parameter of list from main activity into private list
     public ContactAdapter(List<ProductInfo> contactList) {
         this.productList = contactList;
     }
@@ -44,28 +44,29 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
     @Override
     public void onBindViewHolder(final ContactViewHolder contactViewHolder, int i) {
-        ProductInfo pi = productList.get(i);
+        final ProductInfo pi = productList.get(i);
+
+        //assign values from having extracted them in the main activity
         contactViewHolder.brandName.setText(pi.brandName);
         contactViewHolder.productName.setText(pi.productName);
         if(pi.originalPrice == "null")
             contactViewHolder.originalPrice.setText("Original Price: not Available");
         else
             contactViewHolder.originalPrice.setText("Original Price: " + pi.originalPrice);
-
         contactViewHolder.price.setText("Our Price: " + pi.price);
         contactViewHolder.productRating.setText(pi.productRating + "/5.0");
-
-        //contactViewHolder.productRating.setText(pi.productRating + "/5.0");
         contactViewHolder.asin.setText(pi.asin);
-
+        //for image use Picasso
         Picasso.with(contactViewHolder.imageUrl.getContext()).load(pi.imageURL).into(contactViewHolder.imageUrl);
-        //      contactViewHolder.imageUrl.setImageBitmap(pi.bitmap);
-        // example   contactViewHolder.vTitle.setText(ci.name + " " + ci.surname);
 
-        ContactViewHolder.test.setOnClickListener(new View.OnClickListener() {
+        //when view is clicked execute opening new activity
+        ContactViewHolder.selectProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), DetailsActivity.class);
+                //pass the asin to new activity so it can read the new url with product information
+                String passThis = pi.asin;
+                intent.putExtra("passAsin", passThis);
                 v.getContext().startActivity(intent);
             }
         });
@@ -91,7 +92,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         protected TextView asin;
         protected ImageView imageUrl;
         protected Button detailsButton;
-    protected static CardView test;
+        protected static CardView selectProduct;
 
         public ContactViewHolder(View v) {
             super(v);
@@ -104,13 +105,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             imageUrl = (ImageView) v.findViewById(R.id.card_layout_image);
             detailsButton = (Button) v.findViewById(R.id.card_layout_details);
 
-            test = (CardView) v.findViewById(R.id.card_view);
+            selectProduct = (CardView) v.findViewById(R.id.card_view);
 
-            //test.setClickable(true);
-            //test.setOnClickListener((View.OnClickListener) this.test);
-
-            //detailsButton.setClickable(true);
-            //detailsButton.setOnClickListener((View.OnClickListener) this.detailsButton);
         }
 
     }

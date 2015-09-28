@@ -10,11 +10,13 @@
     android:orientation="vertical"
     android:background="#3377ff">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/activity_main_test_text_view"
-        android:padding="10dp"/>
+
+    <!--//Used for testing purposes only while making sure data extracted was correct-->
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/activity_main_test_text_view"-->
+        <!--android:padding="10dp"/>-->
 
     <LinearLayout
         android:layout_width="match_parent"
